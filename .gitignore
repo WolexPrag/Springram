@@ -106,3 +106,5 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ss]ceneDependencyCache*
 .vsconfig
 /Assets/Mirror
+/Assets/ScriptTemplates
+/Assets/ScriptTemplates.meta
