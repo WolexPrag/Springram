@@ -3,9 +3,15 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(CanvasGroup), typeof(RectTransform))]
 public class CommandView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IDropHandler
 {
+    private ICommandViewBus _bus;
+
     private RectTransform _rect;
     private CanvasGroup _canvasGroup;
     public Command Command { get; private set; }
+    public void Init(ICommandViewBus bus)
+    {
+        _bus = bus;
+    }
     public void Awake()
     {
         _rect = GetComponent<RectTransform>();
@@ -20,12 +26,6 @@ public class CommandView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     {
         if (_rect == null) return;
         _rect.anchoredPosition += delta;
-    }
-
-    private ICommandViewBus _bus;
-    public void Init(ICommandViewBus bus)
-    {
-        _bus = bus;
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
