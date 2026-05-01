@@ -5,14 +5,25 @@ using UnityEngine.EventSystems;
 public class CommandScrollView : MonoBehaviour, ICommandViewBus
 {
     [SerializeField] private Transform _container;
-    private List<CommandView> _commands;
+    [SerializeField] private List<CommandView> _commands = new();
     public CommandView[] Commands => _commands.ToArray();
-    private Subject<(CommandView, EventStateType, PointerEventData)> _drag;
+    private Subject<(CommandView, EventStateType, PointerEventData)> _drag = new();
     public Observable<(CommandView, EventStateType, PointerEventData)> OnDrag => _drag;
-    private Subject<(CommandView, PointerEventData)> _drop;
+    private Subject<(CommandView, PointerEventData)> _drop = new();
     public Observable<(CommandView, PointerEventData)> OnDrop => _drop;
     private Transform _intire;
 
+    public void Init(Transform intire)
+    {
+        _intire = intire;
+        if (_commands?.Count > 0)
+        {
+            for (int i = 0; i < _commands.Count; i++)
+            {
+                _commands[i].Init(this);
+            }
+        }
+    }
     public void InsertCommand(CommandView internalCommand, CommandView command)
     {
         InsertCommand(_commands.IndexOf(internalCommand), command);
