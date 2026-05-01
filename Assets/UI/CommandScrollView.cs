@@ -11,6 +11,7 @@ public class CommandScrollView : MonoBehaviour, ICommandViewBus
     public Observable<(CommandView, EventStateType, PointerEventData)> OnDrag => _drag;
     private Subject<(CommandView, PointerEventData)> _drop;
     public Observable<(CommandView, PointerEventData)> OnDrop => _drop;
+    private Transform _intire;
 
     public void InsertCommand(CommandView internalCommand, CommandView command)
     {
@@ -18,16 +19,22 @@ public class CommandScrollView : MonoBehaviour, ICommandViewBus
     }
     public void InsertCommand(int id, CommandView command)
     {
+        if (_commands.Count >= id)
+        {
+            _commands.Add(command);
+        }
+        else
+        {
         _commands.Insert(id, command);
-        command.transform.SetParent(_container);
+        }
+        command.transform.SetParent(_container,false);
         command.transform.SetSiblingIndex(id);
         command.Init(this);
     }
     public void PeekCommand(CommandView command)
     {
         _commands.Remove(command);
-        command.transform.SetParent(null);
-
+        command.transform.SetParent(_intire,true);
     }
     public void OnNextDrag((CommandView, EventStateType, PointerEventData) _)
     {
