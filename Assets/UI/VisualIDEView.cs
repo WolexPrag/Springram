@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.EventSystems;
 using R3;
@@ -11,9 +10,15 @@ public class VisualIDEView : IDEView
 
     [SerializeField] private int _lastSibling = -1;
     [SerializeField] private CommandView _heldItem;
-    private CompositeDisposable _disposable;
+    private CompositeDisposable _disposable = new();
+    private void Awake()
+    {
+        Init();
+    }
     public void Init()
     {
+        _commandsRegistry.Init(transform);
+        _commandsInput.Init(transform);
         _commandsRegistry.OnDrag.Subscribe(_ => OnDrag(_, _commandsRegistry)).AddTo(_disposable);
         _commandsInput.OnDrag.Subscribe(_ => OnDrag(_, _commandsInput)).AddTo(_disposable);
         _commandsInput.OnDrop.Subscribe(_ => OnDrop(_, _commandsInput)).AddTo(_disposable);
