@@ -2,15 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-public class CommandScrollView : MonoBehaviour, ICommandViewBus
+public class CommandScrollView : MonoBehaviour, IUIEventBus<CommandView>, IUIEventNotifier<CommandView>
 {
     [SerializeField] private Transform _container;
     [SerializeField] private List<CommandView> _commands = new();
     public CommandView[] Commands => _commands.ToArray();
-    private Subject<(CommandView, EventStateType, PointerEventData)> _drag = new();
-    public Observable<(CommandView, EventStateType, PointerEventData)> OnDrag => _drag;
-    private Subject<(CommandView, PointerEventData)> _drop = new();
-    public Observable<(CommandView, PointerEventData)> OnDrop => _drop;
+
+    private Subject<UIEventContext<CommandView>> _onBeginDrag = new();
+    private Subject<UIEventContext<CommandView>> _onPerformDrag = new();
+    private Subject<UIEventContext<CommandView>> _onEndDrag = new();
+    private Subject<UIEventContext<CommandView>> _onDrop = new();
+
+    public Observable<UIEventContext<CommandView>> OnBeginDrag => _onBeginDrag;
+    public Observable<UIEventContext<CommandView>> OnPerformDrag => _onPerformDrag;
+    public Observable<UIEventContext<CommandView>> OnEndDrag => _onEndDrag;
+    public Observable<UIEventContext<CommandView>> OnDrop => _onDrop;
+
     private Transform _intire;
 
     public void Init(Transform intire)
@@ -47,13 +54,24 @@ public class CommandScrollView : MonoBehaviour, ICommandViewBus
         _commands.Remove(command);
         command.transform.SetParent(_intire,true);
     }
-    public void OnNextDrag((CommandView, EventStateType, PointerEventData) _)
+
+    public void BeginDrag(UIEventContext<CommandView> context)
     {
-        _drag?.OnNext(_);
+        _onBeginDrag?.OnNext(context);
     }
 
-    public void OnNextDrop((CommandView, PointerEventData) _)
+    public void PerformDrag(UIEventContext<CommandView> context)
     {
-        _drop?.OnNext(_);
+        _onPerformDrag?.OnNext(context);
+    }
+
+    public void EndDrag(UIEventContext<CommandView> context)
+    {
+        _onEndDrag?.OnNext(context);
+    }
+
+    public void Drop(UIEventContext<CommandView> context)
+    {
+        _onDrop?.OnNext(context);
     }
 }

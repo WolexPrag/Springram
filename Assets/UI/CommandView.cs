@@ -3,12 +3,12 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(CanvasGroup), typeof(RectTransform))]
 public class CommandView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IDropHandler
 {
-    private ICommandViewBus _bus;
+    private IUIEventBus<CommandView> _bus;
 
     private RectTransform _rect;
     private CanvasGroup _canvasGroup;
     public Command Command { get; private set; }
-    public void Init(ICommandViewBus bus)
+    public void Init(IUIEventBus<CommandView> bus)
     {
         _bus = bus;
     }
@@ -30,20 +30,20 @@ public class CommandView : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndD
     public void OnBeginDrag(PointerEventData eventData)
     {
         _canvasGroup.blocksRaycasts = false;
-        _bus?.OnNextDrag((this, EventStateType.Begin, eventData));
+        _bus?.BeginDrag(new UIEventContext<CommandView>(this,eventData));
     }
     public void OnDrag(PointerEventData eventData)
     {
-        _bus?.OnNextDrag((this, EventStateType.Perform, eventData));
+        _bus?.PerformDrag(new UIEventContext<CommandView>(this, eventData));
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        _bus?.OnNextDrag((this, EventStateType.End, eventData));
+        _bus?.EndDrag(new UIEventContext<CommandView>(this, eventData));
         _canvasGroup.blocksRaycasts = true;
     }
     public void OnDrop(PointerEventData eventData)
     {
-        _bus?.OnNextDrop((this, eventData));
+        _bus?.Drop(new UIEventContext<CommandView>(this, eventData));
     }
 }
 
