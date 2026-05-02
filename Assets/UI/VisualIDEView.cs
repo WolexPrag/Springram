@@ -5,11 +5,11 @@ using R3;
 
 public class VisualIDEView : IDEView
 {
-    [SerializeField] private BlockPanel _commandsRegistry;
-    [SerializeField] private BlockPanel _commandsInput;
+    [SerializeField] private BlockPanel _registryPanel;
+    [SerializeField] private BlockPanel _inputPanel;
 
     [SerializeField] private int _lastSibling = -1;
-    [SerializeField] private CommandView _heldItem;
+    [SerializeField] private Block _heldItem;
     private CompositeDisposable _disposable = new();
     private void Awake()
     {
@@ -17,18 +17,18 @@ public class VisualIDEView : IDEView
     }
     public void Init()
     {
-        _commandsRegistry.Init(transform);
-        _commandsInput.Init(transform);
+        _registryPanel.Init(transform);
+        _inputPanel.Init(transform);
     }
     public void DeInit()
     {
         _disposable?.Dispose();
     }
-    private void Return(CommandView view, BlockPanel scrollView)
+    private void Return(Block view, BlockPanel scrollView)
     {
-        scrollView.InsertCommand(_lastSibling, view);
+        scrollView.Insert(_lastSibling, view);
     }
-    public CommandView CreateNew()
+    public Block CreateNew()
     {
         return Instantiate(_heldItem);
 
@@ -36,6 +36,6 @@ public class VisualIDEView : IDEView
 
     public override Command[] GetInput()
     {
-        return _commandsInput.Commands.Select(_ => _.Command).ToArray();
+        return _inputPanel.Blocks.Select(_ => _.Command).ToArray();
     }
 }
