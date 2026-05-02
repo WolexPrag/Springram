@@ -5,8 +5,8 @@ using R3;
 
 public class VisualIDEView : IDEView
 {
-    [SerializeField] private CommandScrollView _commandsRegistry;
-    [SerializeField] private CommandScrollView _commandsInput;
+    [SerializeField] private BlockPanel _commandsRegistry;
+    [SerializeField] private BlockPanel _commandsInput;
 
     [SerializeField] private int _lastSibling = -1;
     [SerializeField] private CommandView _heldItem;
@@ -24,7 +24,7 @@ public class VisualIDEView : IDEView
     {
         _disposable?.Dispose();
     }
-    private void Return(CommandView view, CommandScrollView scrollView)
+    private void Return(CommandView view, BlockPanel scrollView)
     {
         scrollView.InsertCommand(_lastSibling, view);
     }

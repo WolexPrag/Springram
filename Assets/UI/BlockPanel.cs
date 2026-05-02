@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-public class CommandScrollView : MonoBehaviour, IUIEventBus<CommandView>, IUIEventNotifier<CommandView>
+public class BlockPanel : MonoBehaviour, IUIEventBus<CommandView>, IUIEventNotifier<CommandView>
 {
     [SerializeField] private Transform _container;
     [SerializeField] private List<CommandView> _commands = new();
