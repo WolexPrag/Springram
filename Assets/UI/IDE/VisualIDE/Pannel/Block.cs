@@ -22,6 +22,14 @@ public class Block : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     {
         Command = command;
     }
+    public void BlockRaycasts()
+    {
+        _canvasGroup.blocksRaycasts = true;
+    }
+    public void UnblockRaycasts()
+    {
+        _canvasGroup.blocksRaycasts = false;
+    }
     public void MoveDelta(Vector2 delta)
     {
         if (_rect == null) return;
@@ -29,7 +37,6 @@ public class Block : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
-        _canvasGroup.blocksRaycasts = false;
         _bus?.BeginDrag(new UIEventContext<Block>(this,eventData));
     }
     public void OnDrag(PointerEventData eventData)
@@ -39,7 +46,6 @@ public class Block : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     public void OnEndDrag(PointerEventData eventData)
     {
         _bus?.EndDrag(new UIEventContext<Block>(this, eventData));
-        _canvasGroup.blocksRaycasts = true;
     }
     public void OnDrop(PointerEventData eventData)
     {
