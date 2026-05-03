@@ -22,13 +22,9 @@ public class Block : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHan
     {
         Command = command;
     }
-    public void BlockRaycasts()
+    public void SetInteractable(bool value)
     {
-        _canvasGroup.blocksRaycasts = true;
-    }
-    public void UnblockRaycasts()
-    {
-        _canvasGroup.blocksRaycasts = false;
+        _canvasGroup.blocksRaycasts = value;
     }
     public void MoveDelta(Vector2 delta)
     {
