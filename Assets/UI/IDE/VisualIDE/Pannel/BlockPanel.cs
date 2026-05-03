@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-public class BlockPanel : MonoBehaviour, IUIEventBus<Block>, IUIEventNotifier<Block>
+public class BlockPanel : MonoBehaviour, IUIEventBus<Block>, IUIEventNotifier<Block>, IBlockContainer
 {
     [SerializeField] private Transform _container;
     [SerializeField] private List<Block> _blocks = new();
@@ -18,43 +18,16 @@ public class BlockPanel : MonoBehaviour, IUIEventBus<Block>, IUIEventNotifier<Bl
     public Observable<UIEventContext<Block>> OnEndDrag => _onEndDrag;
     public Observable<UIEventContext<Block>> OnDrop => _onDrop;
 
-    private Transform _intire;
-
-    public void Init(Transform intire)
+    public void Init()
     {
-        _intire = intire;
         if (_blocks?.Count > 0)
         {
-            for (int i = 0; i < _blocks.Count; i++) 
+            for (int i = 0; i < _blocks.Count; i++)
             {
                 _blocks[i].Init(this);
             }
         }
     }
-    public void Insert(Block internalBlock, Block block)
-    {
-        Insert(_blocks.IndexOf(internalBlock), block);
-    }
-    public void Insert(int id, Block block)
-    {
-        if (_blocks.Count >= id)
-        {
-            _blocks.Add(block);
-        }
-        else
-        {
-        _blocks.Insert(id, block);
-        }
-        block.transform.SetParent(_container,false);
-        block.transform.SetSiblingIndex(id);
-        block.Init(this);
-    }
-    public void Peek(Block block)
-    {
-        _blocks.Remove(block);
-        block.transform.SetParent(_intire,true);
-    }
-
     public void BeginDrag(UIEventContext<Block> context)
     {
         _onBeginDrag?.OnNext(context);
@@ -73,5 +46,21 @@ public class BlockPanel : MonoBehaviour, IUIEventBus<Block>, IUIEventNotifier<Bl
     public void Drop(UIEventContext<Block> context)
     {
         _onDrop?.OnNext(context);
+    }
+    public void Insert(int id, Block block)
+    {
+        block.transform.SetParent(_container, false);
+        block.transform.SetSiblingIndex(id);
+        _blocks.Insert(id, block);
+        block.Init(this);
+    }
+    public void Remove(int index)
+    {
+        _blocks.RemoveAt(index);
+    }
+
+    public int GetIndex(Block block)
+    {
+        return _blocks.IndexOf(block);
     }
 }

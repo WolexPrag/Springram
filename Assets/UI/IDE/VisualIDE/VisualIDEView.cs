@@ -20,8 +20,8 @@ public class VisualIDEView : IDEView , ITransition<Block>
     }
     public void Init()
     {
-        _registryPanel.Init(transform);
-        _inputPanel.Init(transform);
+        _registryPanel.Init();
+        _inputPanel.Init();
     }
     public void DeInit()
     {
