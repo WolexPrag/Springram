@@ -12,7 +12,7 @@ public class VisualIDEView : IDEView , ITransition<Block>
     [SerializeField] private Block _holdItem;
 
     [SerializeField] private int _lastSibling = -1;
-    [SerializeField] private Block _heldItem;
+    [SerializeField] private Block _holdItem;
     private CompositeDisposable _disposable = new();
     private void Awake()
     {
