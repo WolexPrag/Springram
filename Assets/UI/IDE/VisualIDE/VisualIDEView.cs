@@ -8,8 +8,8 @@ public class VisualIDEView : IDEView , ITransition<Block>
     [SerializeField] private Transform _canvas;
     [SerializeField] private BlockPanel _registryPanel;
     [SerializeField] private BlockPanel _inputPanel;
-    [SerializeField] private int _lastSibling;
-    [SerializeField] private Block _holdItem;
+    private BlockMediator _registryMediator;
+    private BlockMediator _inputMediator;
 
     [SerializeField] private int _lastSibling = -1;
     [SerializeField] private Block _holdItem;
@@ -22,9 +22,13 @@ public class VisualIDEView : IDEView , ITransition<Block>
     {
         _registryPanel.Init();
         _inputPanel.Init();
+        _inputMediator = new BlockMediator(_inputPanel, this, _inputPanel);
+        _registryMediator = new RegistryMediator(_registryPanel,this,_registryPanel);
     }
     public void DeInit()
     {
+        _registryMediator.DeInit();
+        _inputMediator.DeInit();
         _disposable?.Dispose();
     }
     public void Place(object source, Block item)
@@ -45,6 +49,7 @@ public class VisualIDEView : IDEView , ITransition<Block>
     {
         if (_holdItem==null) return; 
         _holdItem.transform.SetSiblingIndex(_lastSibling);
+        if (source.GetType() == typeof(BlockMediator)) ((BlockMediator)source).Abort(_holdItem,_lastSibling);
         _holdItem = null;
     }
 
